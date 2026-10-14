@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.1</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.sahil</groupId>
+	<artifactId>pact-room-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name/>
+	<description/>
+	<url/>
+	<licenses>
+		<license/>
+	</licenses>
+	<developers>
+		<developer/>
+	</developers>
+	<scm>
+		<connection/>
+		<developerConnection/>
+		<tag/>
+		<url/>
+	</scm>
+	<properties>
+		<java.version>17</java.version>
+		<pact.consumer.version>${project.version}</pact.consumer.version>
+<pact.provider.version.value>${project.version}</pact.provider.version.value>
+<pact.provider.branch.value>main</pact.provider.branch.value>
+
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-h2console</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+<dependency>
+    <groupId>au.com.dius.pact.consumer</groupId>
+    <artifactId>junit5</artifactId>
+    <version>4.6.17</version>
+    <scope>test</scope>
+</dependency>
+
+<dependency>
+    <groupId>au.com.dius.pact.provider</groupId>
+    <artifactId>junit5</artifactId>
+    <version>4.6.17</version>
+    <scope>test</scope>
+</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <configuration>
+        <systemPropertyVariables>
+            <pact.verifier.publishResults>true</pact.verifier.publishResults>
+            <pact.provider.version>${pact.provider.version.value}</pact.provider.version>
+            <pact.provider.branch>${pact.provider.branch.value}</pact.provider.branch>
+        </systemPropertyVariables>
+    </configuration>
+</plugin>
+
+
+<plugin>
+    <groupId>au.com.dius.pact.provider</groupId>
+    <artifactId>maven</artifactId>
+    <version>4.6.17</version>
+    <configuration>
+        <pactDirectory>${project.build.directory}/pacts</pactDirectory>
+        <pactBrokerUrl>${env.PACT_BROKER_BASE_URL}</pactBrokerUrl>
+        <pactBrokerToken>${env.PACT_BROKER_TOKEN}</pactBrokerToken>
+        <pactBrokerAuthenticationScheme>Bearer</pactBrokerAuthenticationScheme>
+        <projectVersion>${pact.consumer.version}</projectVersion>
+        <trimSnapshot>true</trimSnapshot>
+    </configuration>
+</plugin>
+
+		</plugins>
+	</build>
+
+</project>

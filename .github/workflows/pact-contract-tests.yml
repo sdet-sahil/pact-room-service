@@ -1,0 +1,52 @@
+name: Pact Contract Tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  pact-tests:
+    runs-on: ubuntu-latest
+
+    env:
+      PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+      PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Verify required secrets
+        run: |
+          test -n "$PACT_BROKER_BASE_URL"
+          test -n "$PACT_BROKER_TOKEN"
+
+      - name: Run consumer Pact test
+        run: |
+          ./mvnw -B \
+            -Dpact.consumer.version="$GITHUB_SHA" \
+            -Dtest=RoomConsumerPactTest \
+            test
+
+      - name: Publish consumer contract
+        run: |
+          ./mvnw -B \
+            -Dpact.consumer.version="$GITHUB_SHA" \
+            au.com.dius.pact.provider:maven:4.6.17:publish
+
+      - name: Verify provider and publish results
+        run: |
+          ./mvnw -B \
+            -Dpact.provider.version.value="$GITHUB_SHA" \
+            -Dpact.provider.branch.value="$GITHUB_REF_NAME" \
+            -Dtest=RoomProviderPactTest \
+            test
