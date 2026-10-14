@@ -50,3 +50,17 @@ jobs:
             -Dpact.provider.branch.value="$GITHUB_REF_NAME" \
             -Dtest=RoomProviderPactTest \
             test
+
+       
+      - name: Set up Pact CLI
+        uses: pactflow/actions@main
+
+      - name: Check consumer compatibility with main
+        run: |
+          pact-broker can-i-deploy \
+            --pacticipant RoomWebApp \
+            --version "$GITHUB_SHA" \
+            --pacticipant RoomService \
+            --branch main \
+            --broker-base-url "$PACT_BROKER_BASE_URL"
+
